@@ -1,0 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;500&display=swap");
+
+//COLORS
+$COLOR_WHITE: #fff;
+$COLOR_BLUE: rgb(50, 94, 189);
+$COLOR_GREEN: #32a848;
+$COLOR_LIGHT_BLUE: #94d6f7;
+$COLOR_BLACK: #000;
+$COLOR_ORANGE: #ff8514;
+
+$COLOR_GRADIENT_BG: 180deg, rgba(50, 94, 189, 0.9136029411764706) 0%,
+  rgba(25, 107, 138, 0.7791491596638656) 60%,
+  rgba(0, 172, 255, 0.31976540616246496) 100%;
+
+//ICON
+$ICON_ARROW_DOWN: "../../assets/img/icons/down_arrow.svg";
+$ICON_BELL: "../../assets/img/icons/bell.svg";
+$ICON_CLOUD: "../../assets/img/icons/cloud.svg";
+$ICON_TEMPERATURE: "../../assets/img/icons/temperature.svg";
+$ICON_HUMIDITY: "../../assets/img/icons/water_drop.svg";
+$ICON_PLUS: "../../assets/img/icons/plus.svg";

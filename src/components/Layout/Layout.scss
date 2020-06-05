@@ -1,0 +1,17 @@
+.layout {
+  &-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    background: $COLOR_BLUE;
+    background: linear-gradient($COLOR_GRADIENT_BG);
+  }
+
+  &-uppper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 60%;
+  }
+}
