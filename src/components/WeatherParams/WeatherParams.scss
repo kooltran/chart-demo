@@ -1,0 +1,74 @@
+.weatherParams {
+  &-wrapper {
+    display: flex;
+  }
+
+  &-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 100px;
+    padding: 10px 0;
+    border-right: 1px solid $COLOR_WHITE;
+
+    .title {
+      font-weight: 500;
+      font-size: 18px;
+    }
+
+    .bg-numb {
+      font-size: 24px;
+      padding: 8px;
+      background: $COLOR_GREEN;
+      border-radius: 4px;
+      width: 30px;
+      height: 30px;
+    }
+
+    .normal-numb {
+      font-size: 30px;
+    }
+
+    .circle-shape {
+      width: 40px;
+      height: 40px;
+      border: 2px solid $COLOR_WHITE;
+      border-radius: 100%;
+      background-color: $COLOR_LIGHT_BLUE;
+    }
+
+    .add-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 30px;
+      height: 30px;
+      border: 1px solid $COLOR_BLACK;
+      border-radius: 100%;
+      text-align: center;
+      cursor: pointer;
+
+      &:before {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-image: url($ICON_PLUS);
+        background-size: contain;
+        content: "";
+      }
+    }
+
+    .add-text {
+      color: $COLOR_BLACK;
+      font-weight: 500;
+      font-size: 20px;
+    }
+
+    &:last-child {
+      border-right: 0;
+      justify-content: space-around;
+    }
+  }
+}

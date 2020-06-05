@@ -1,0 +1,8 @@
+@import "variables";
+@import "general";
+
+@import "../components/Nav/Nav.scss";
+@import "../components/Layout/Layout.scss";
+@import "../components/WeatherStatus/WeatherStatus.scss";
+@import "../components/WeatherParams/WeatherParams.scss";
+@import "../components/WeatherChart/WeatherChart.scss";
