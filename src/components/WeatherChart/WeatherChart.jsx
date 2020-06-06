@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useLayoutEffect } from "react";
 // import Chart from "chart.js";
 
-const NUMB_DAYS = 3;
+const NUMB_DAYS = 5;
 
 const formatTime = time => {
   const fmTime = time % 24;
@@ -30,6 +30,30 @@ const sampleDataTimeItem = n => {
 };
 
 const sampleDateWater = [
+  {
+    waterLevel: {
+      start: 2,
+      end: 0.5
+    }
+  },
+  {
+    waterLevel: {
+      start: 0.5,
+      end: 2
+    }
+  },
+  {
+    waterLevel: {
+      start: 2,
+      end: 0.5
+    }
+  },
+  {
+    waterLevel: {
+      start: 0.5,
+      end: 2
+    }
+  },
   {
     waterLevel: {
       start: 2,
@@ -105,6 +129,9 @@ const WeatherChart = () => {
           chartWidth * (i + 1),
           beginPt
         );
+
+        ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+        ctx.fillRect(chartWidth * i, 0, chartWidth, beginPt);
       } else {
         ctx.quadraticCurveTo(
           chartWidth * i + halfInnerWidth,
@@ -172,7 +199,7 @@ const WeatherChart = () => {
       const middlePtX = (endPt.x - startPt.x) / 2 + startPt.x;
       const middlePt = { x: middlePtX, y: middlePtY };
 
-      if (!i % 2) {
+      if (!(i % 2)) {
         ctx.moveTo(startPt.x, startPt.y);
         ctx.quadraticCurveTo(middlePtX, startPt.y, middlePtX, middlePtY);
 
@@ -249,10 +276,10 @@ const WeatherChart = () => {
 
   useEffect(() => {
     handleCanvas();
+    // window.addEventListener('scroll', )
   }, [chartWidth]);
 
   return (
-    // <div className="chart-wrapper" ref={chartWrapperRef}>
     <div className="chart-container" ref={chartContainerRef}>
       <div className="chart-title">
         <span className="blue-title">Tide</span>
@@ -260,7 +287,6 @@ const WeatherChart = () => {
       </div>
       <canvas className="chart-canvas" ref={chartRef} />
     </div>
-    // </div>
   );
 };
 
