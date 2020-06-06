@@ -3,6 +3,14 @@ import React, { useEffect, useState, useLayoutEffect } from "react";
 
 const NUMB_DAYS = 3;
 
+const formatTime = time => {
+  const fmTime = time % 24;
+  if (fmTime > 12) {
+    return `${fmTime - 12} pm`;
+  }
+  return `${fmTime} am`;
+};
+
 const generateTime = n => {
   let res = [];
   for (let i = 1; i <= n; i++) {
@@ -111,7 +119,6 @@ const WeatherChart = () => {
   };
 
   const _fillChart = ({ start, end, chartHeight, ctx, options = {} }) => {
-    console.log(end, "end");
     ctx.lineTo(end.x, chartHeight);
     ctx.lineTo(start.x, chartHeight);
     ctx.lineTo(start.x, start.y);
@@ -119,6 +126,17 @@ const WeatherChart = () => {
     ctx.fillStyle = options.fillStyle || "#c1e5f7";
     ctx.strokeStyle = "#c1e5f7";
     ctx.fill();
+  };
+
+  const _fillText = (start, ctx, dataText) => {
+    ctx.font = "14px Comic Sans MS";
+    ctx.textAlign = "center";
+    ctx.fillStyle = "black";
+    ctx.fillText(`${dataText.waterLevel} m`, start.x, start.y - 27);
+    ctx.fillText(formatTime(dataText.time), start.x, start.y - 9);
+
+    ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+    ctx.fillRect(start.x - 28, start.y - 44, 55, 44);
   };
 
   const drawTideChart = (beginPt, ctx) => {
@@ -138,6 +156,15 @@ const WeatherChart = () => {
         tideData[i].waterLevel.end,
         tideData[i].time.end
       );
+
+      _fillText(startPt, ctx, {
+        waterLevel: tideData[i].waterLevel.start,
+        time: tideData[i].time.start
+      });
+      _fillText(endPt, ctx, {
+        waterLevel: tideData[i].waterLevel.end,
+        time: tideData[i].time.end
+      });
 
       const middlePtY =
         (beginPt - startPt.y - (beginPt - endPt.y)) / 2 + startPt.y;
