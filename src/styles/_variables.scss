@@ -5,8 +5,9 @@ $COLOR_WHITE: #fff;
 $COLOR_BLUE: rgb(50, 94, 189);
 $COLOR_GREEN: #32a848;
 $COLOR_LIGHT_BLUE: #94d6f7;
-$COLOR_BLACK: #000;
+$COLOR_BLACK: #333;
 $COLOR_ORANGE: #ff8514;
+$COLOR_BLACK_FADED: rgba(0, 0, 0, 0.2);
 
 $COLOR_GRADIENT_BG: 180deg, rgba(50, 94, 189, 0.9136029411764706) 0%,
   rgba(25, 107, 138, 0.7791491596638656) 60%,
@@ -19,3 +20,5 @@ $ICON_CLOUD: "../../assets/img/icons/cloud.svg";
 $ICON_TEMPERATURE: "../../assets/img/icons/temperature.svg";
 $ICON_HUMIDITY: "../../assets/img/icons/water_drop.svg";
 $ICON_PLUS: "../../assets/img/icons/plus.svg";
+$ICON_MOON: "../../assets/img/icons/moon.svg";
+$ICON_SUN: "../../assets/img/icons/sun.svg";

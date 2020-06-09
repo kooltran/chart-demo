@@ -1,13 +1,65 @@
 .chart {
-  // &-wrapper {
-  //   height: 40%;
-  // }
   &-container {
     position: relative;
     overflow-x: scroll;
     overflow-y: hidden;
     height: 40%;
     background-color: $COLOR_WHITE;
+
+    .time-text {
+      position: fixed;
+      color: $COLOR_BLACK;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+
+      &:before {
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 0 8px 8px 8px;
+        border-color: transparent transparent $COLOR_WHITE transparent;
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      &:after {
+        content: "";
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        width: 1px;
+        height: 150px;
+        background: $COLOR_BLACK_FADED;
+      }
+    }
+
+    .img-sun {
+      display: none;
+    }
+
+    .icon-moon,
+    .icon-sun {
+      position: fixed;
+      bottom: 25%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 25px;
+      height: 25px;
+      background-size: contain;
+    }
+
+    .icon-moon {
+      background-image: url($ICON_MOON);
+    }
+
+    // .icon-sun {
+    //   background-image: url($ICON_SUN);
+    // }
   }
 
   &-title {
@@ -28,10 +80,4 @@
       margin-left: 10px;
     }
   }
-}
-
-.chartjs-render-monitor {
-  position: absolute;
-  top: 0;
-  left: 0;
 }

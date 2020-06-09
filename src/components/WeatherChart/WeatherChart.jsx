@@ -1,225 +1,272 @@
-import React, { useEffect, useState, useLayoutEffect } from "react";
-// import Chart from "chart.js";
+import React, {
+  useEffect,
+  useState,
+  useLayoutEffect,
+  useCallback,
+} from "react";
+import {
+  formatTime,
+  generateTime,
+  convertPxToTime,
+  getTimeMode,
+  getQuadraticCurvePoint,
+} from "../../helpers";
+import sun from "../../assets/img/icons/sun.svg";
 
-const NUMB_DAYS = 10;
+const NUMB_DAYS = 5;
 
-// var data = {
-//   labels: ["1", "2"],
-//   datasets: [
-//     {
-//       label: "My Second dataset",
-//       fillColor: "rgba(151,187,205,0.2)",
-//       strokeColor: "rgba(151,187,205,1)",
-//       pointColor: "rgba(151,187,205,1)",
-//       pointStrokeColor: "#fff",
-//       pointHighlightFill: "#fff",
-//       pointHighlightStroke: "rgba(151,187,205,1)",
-//       data: [2.5, 0.5],
-//     },
-//   ],
-// };
-
-const tideData = [
+const sampleDateWater = [
+  {
+    waterLevel: {
+      start: 0.3,
+      end: 2,
+    },
+  },
   {
     waterLevel: {
       start: 2,
-      end: 0.5,
-    },
-    time: {
-      start: 7,
-      end: 15,
+      end: 0.3,
     },
   },
   {
     waterLevel: {
-      start: 0.5,
-      end: 2.5,
-    },
-    time: {
-      start: 15,
-      end: 15 + 10,
+      start: 0.3,
+      end: 2,
     },
   },
   {
     waterLevel: {
-      start: 2.5,
-      end: 1,
-    },
-    time: {
-      start: 15 + 10,
-      end: 15 + 10 + 7,
+      start: 2,
+      end: 0.3,
     },
   },
   {
     waterLevel: {
-      start: 1,
-      end: 2.3,
-    },
-    time: {
-      start: 15 + 10 + 7,
-      end: 15 + 10 + 7 + 6,
+      start: 0.3,
+      end: 2,
     },
   },
   {
     waterLevel: {
-      start: 2.3,
-      end: 1.5,
-    },
-    time: {
-      start: 15 + 10 + 7 + 6,
-      end: 15 + 10 + 7 + 6 + 5,
+      start: 2,
+      end: 0.3,
     },
   },
   {
     waterLevel: {
-      start: 1.5,
-      end: 2.5,
+      start: 0.3,
+      end: 2,
     },
-    time: {
-      start: 15 + 10 + 7 + 6 + 5,
-      end: 15 + 10 + 7 + 6 + 5 + 9,
+  },
+  {
+    waterLevel: {
+      start: 2,
+      end: 0.3,
+    },
+  },
+  {
+    waterLevel: {
+      start: 0.3,
+      end: 2,
+    },
+  },
+  {
+    waterLevel: {
+      start: 2,
+      end: 0.3,
     },
   },
 ];
 
-const sampleData = [
-  {
-    waterLevel: {
-      startLv: 2,
-      endLv: 0.5,
-    },
-    time: {
-      startT: 7,
-      endT: 15,
-    },
-  },
-];
+const sampleDataTime = generateTime(sampleDateWater.length);
 
+const tideData = sampleDateWater.map((item, i) => ({
+  ...item,
+  ...sampleDataTime[i],
+}));
+console.log(tideData, "tideData");
 const WeatherChart = () => {
   const { innerWidth } = window;
   const chartRef = React.createRef();
   const chartContainerRef = React.createRef();
-  const chartWrapperRef = React.createRef();
+  const sunRef = React.createRef();
   const [chartWidth, setChartWidth] = useState(innerWidth);
+  const [scrollNumb, setScroll] = useState(0);
+  const [tmpPos, setPos] = useState(0.0);
+  const [day, setDay] = useState(0);
+  const canvasWidth = NUMB_DAYS * chartWidth;
   const halfInnerWidth = chartWidth / 2;
   const pxEachHr = chartWidth / 12;
+  const timeFromPx = convertPxToTime(scrollNumb, chartWidth);
+  const timeScroll = formatTime(timeFromPx);
+  const mode = getTimeMode(timeFromPx).mode;
 
-  const generateData = (data, nextWaterLv, nextTime) => {
-    for (let i = 0; i < 5; i++) {
-      return data.map((item) => {
-        const waterLevel = item.waterLevel;
-        const time = item.time;
-        return {
-          ...item,
-          ...waterLevel,
-          startLv: waterLevel.start,
-          endLv: nextWaterLv,
-          ...time,
-          startT: time.start,
-          endT: time.start + nextTime,
-        };
-      });
-    }
-  };
+  const _fillChartBg = ({ start, end, chartHeight, ctx, options = {} }) => {
+    ctx.lineTo(end.x, chartHeight - 20);
+    ctx.lineTo(start.x, chartHeight - 20);
+    ctx.lineTo(start.x, start.y);
 
-  const convertDataToXY = (beginPt, waterLevel, time) => {
-    return {
-      x: (time - 7) * pxEachHr,
-      y: beginPt - waterLevel * 100,
-    };
-  };
-
-  const drawSunChart = (beginPt, ctx) => {
-    ctx.beginPath();
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = "#ff8514";
-
-    for (let i = 0; i < NUMB_DAYS; i++) {
-      ctx.moveTo(i * chartWidth, beginPt);
-      if (i % 2) {
-        ctx.quadraticCurveTo(
-          chartWidth * i + halfInnerWidth,
-          beginPt * 2,
-          chartWidth * (i + 1),
-          beginPt
-        );
-      } else {
-        ctx.quadraticCurveTo(
-          chartWidth * i + halfInnerWidth,
-          -beginPt + 150,
-          chartWidth * (i + 1),
-          beginPt
-        );
-      }
-    }
-
-    ctx.stroke();
-  };
-
-  const drawTideChart = (beginPt, ctx) => {
-    ctx.beginPath();
-    ctx.strokeStyle = "#94d6f7";
-    ctx.fillStyle = "blue";
+    ctx.fillStyle = options.fillStyle || "#c1e5f7";
+    ctx.strokeStyle = "#c1e5f7";
     ctx.fill();
+  };
 
-    for (let i = 0; i < tideData.length; i++) {
-      const startPt = convertDataToXY(
-        beginPt,
-        tideData[i].waterLevel.start,
-        tideData[i].time.start
-      );
-      const endPt = convertDataToXY(
-        beginPt,
-        tideData[i].waterLevel.end,
-        tideData[i].time.end
-      );
+  const _fillText = (start, ctx, dataText) => {
+    ctx.font = "14px Comic Sans MS";
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#333";
+    ctx.fillText(`${dataText.waterLevel} m`, start.x, start.y - 27);
+    ctx.fillText(formatTime(dataText.time), start.x, start.y - 9);
 
-      const middlePtY =
-        (beginPt - startPt.y - (beginPt - endPt.y)) / 2 + startPt.y;
+    ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+    ctx.fillRect(start.x - 28, start.y - 44, 55, 44);
+  };
 
-      const middlePtX = (endPt.x - startPt.x) / 2 + startPt.x;
+  const convertDataToXY = useCallback(
+    (chartHeight, waterLevel, time) => {
+      return {
+        x: (time - 7 - 7) * pxEachHr,
+        y: chartHeight - waterLevel * 100,
+      };
+    },
+    [pxEachHr]
+  );
 
-      if (!i % 2) {
-        ctx.moveTo(startPt.x, startPt.y);
-        ctx.quadraticCurveTo(middlePtX, startPt.y, middlePtX, middlePtY);
+  const drawTimeChart = useCallback(
+    (chartHeight) => {
+      const ctx = chartRef.current.getContext("2d");
+      ctx.beginPath();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#ff8514";
 
-        ctx.moveTo(middlePtX, middlePtY);
-        ctx.quadraticCurveTo(middlePtX, endPt.y, endPt.x, endPt.y);
-      } else {
-        ctx.moveTo(startPt.x, startPt.y);
-        ctx.quadraticCurveTo(middlePtX, startPt.y, middlePtX, middlePtY);
-
-        ctx.moveTo(middlePtX, middlePtY);
-        ctx.quadraticCurveTo(middlePtX, endPt.y, endPt.x, endPt.y);
+      for (let i = 0; i < NUMB_DAYS; i++) {
+        ctx.moveTo(i * chartWidth + halfInnerWidth, chartHeight);
+        if (!(i % 2)) {
+          ctx.quadraticCurveTo(
+            chartWidth * (i + 1),
+            -chartHeight + 150,
+            (i + 1) * chartWidth + halfInnerWidth,
+            chartHeight
+          );
+        } else {
+          // fill color for night times
+          ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+          ctx.fillRect(
+            (chartWidth + halfInnerWidth) * i,
+            0,
+            chartWidth + halfInnerWidth,
+            chartHeight
+          );
+        }
       }
-    }
 
-    ctx.stroke();
+      ctx.stroke();
+    },
+    [chartRef, chartWidth, halfInnerWidth]
+  );
+
+  const drawTideChart = useCallback(
+    (chartHeight) => {
+      const ctx = chartRef.current.getContext("2d");
+      const chartContainerHeight = chartContainerRef.current.getBoundingClientRect()
+        .height;
+      ctx.beginPath();
+      ctx.strokeStyle = "#94d6f7";
+      for (let i = 0; i < tideData.length; i++) {
+        const startPt = convertDataToXY(
+          chartHeight,
+          tideData[i].waterLevel.start,
+          tideData[i].time.start
+        );
+        const endPt = convertDataToXY(
+          chartHeight,
+          tideData[i].waterLevel.end,
+          tideData[i].time.end
+        );
+
+        // draw info tide and time of TideChart
+        _fillText(startPt, ctx, {
+          waterLevel: tideData[i].waterLevel.start,
+          time: tideData[i].time.start,
+        });
+        _fillText(endPt, ctx, {
+          waterLevel: tideData[i].waterLevel.end,
+          time: tideData[i].time.end,
+        });
+
+        const middlePtY =
+          (chartHeight - startPt.y - (chartHeight - endPt.y)) / 2 + startPt.y;
+
+        const middlePtX = (endPt.x - startPt.x) / 2 + startPt.x;
+        const middlePt = { x: middlePtX, y: middlePtY };
+
+        if (!(i % 2)) {
+          ctx.moveTo(startPt.x, startPt.y);
+          ctx.quadraticCurveTo(middlePtX, startPt.y, middlePtX, middlePtY);
+
+          _fillChartBg({
+            start: startPt,
+            end: middlePt,
+            chartHeight: chartContainerHeight,
+            ctx,
+          });
+
+          ctx.moveTo(middlePtX, middlePtY);
+          ctx.quadraticCurveTo(middlePtX, endPt.y, endPt.x, endPt.y);
+
+          // fill background color for the TideChart
+          _fillChartBg({
+            start: middlePt,
+            end: endPt,
+            chartHeight: chartContainerHeight,
+            ctx,
+          });
+        } else {
+          ctx.moveTo(startPt.x, startPt.y);
+          ctx.quadraticCurveTo(middlePtX, startPt.y, middlePtX, middlePtY);
+
+          // fill background color for the TideChart
+          _fillChartBg({
+            start: startPt,
+            end: middlePt,
+            chartHeight: chartContainerHeight,
+            ctx,
+          });
+
+          ctx.moveTo(middlePtX, middlePtY);
+          ctx.quadraticCurveTo(middlePtX, endPt.y, endPt.x, endPt.y);
+
+          // fill background color for the TideChart
+          _fillChartBg({
+            start: middlePt,
+            end: endPt,
+            chartHeight: chartContainerHeight,
+            ctx,
+          });
+        }
+      }
+
+      ctx.stroke();
+    },
+    [chartContainerRef, chartRef, convertDataToXY]
+  );
+
+  const handleScroll = ({ target }) => {
+    const day = Math.floor(scrollNumb / chartWidth);
+    setScroll(target.scrollLeft);
+    setDay(day);
   };
 
-  const handleCanvas = () => {
-    const chartContainerHeight = chartContainerRef.current.offsetHeight;
-    const beginPt = chartContainerHeight;
+  const handleCanvas = useCallback(() => {
+    const chartHeight = chartContainerRef.current.offsetHeight - 20;
     const c = chartRef.current;
-    const ctx = c.getContext("2d");
 
-    c.width = NUMB_DAYS * chartWidth;
-    c.height = beginPt * 2;
+    c.width = canvasWidth;
+    c.height = chartHeight;
 
-    drawSunChart(beginPt, ctx);
-
-    drawTideChart(beginPt, ctx);
-  };
-
-  // const handleChart = () => {
-  //   const ctx = chartRef.current.getContext("2d");
-
-  //   new Chart(ctx, {
-  //     type: "line",
-  //     responsive: true,
-  //     data: data,
-  //   });
-  // };
+    drawTideChart(chartHeight);
+    drawTimeChart(chartHeight);
+  }, [canvasWidth, chartContainerRef, chartRef, drawTideChart, drawTimeChart]);
 
   useLayoutEffect(() => {
     const updateChartWidth = (e) => {
@@ -236,24 +283,55 @@ const WeatherChart = () => {
   }, [chartWidth]);
 
   useEffect(() => {
-    // const chartContainerHeight = chartContainerRef.current.offsetHeight;
-    // console.log(chartContainerHeight, "chartContainerHeight");
     handleCanvas();
-    // chartWrapperRef.current.style.width = `${chartWidth}px`;
-    // chartContainerRef.current.style.width = `1200px`;
-    // handleChart(chartRef);
-  }, [chartWidth]);
+  }, [chartContainerRef, chartWidth, handleCanvas, scrollNumb]);
+
+  useEffect(() => {
+    const ctx = chartRef.current.getContext("2d");
+    const chartHeight = chartContainerRef.current.offsetHeight - 20;
+
+    const ps = getQuadraticCurvePoint(
+      day * chartWidth + halfInnerWidth,
+      chartHeight,
+      chartWidth * (day + 1),
+      -chartHeight + 150,
+      (day + 1) * chartWidth + halfInnerWidth,
+      chartHeight,
+      tmpPos
+    );
+    if (day > 0) {
+      setPos(() => (scrollNumb / chartWidth) % 2);
+    } else {
+      setPos(() => scrollNumb / chartWidth);
+    }
+    ctx.drawImage(sunRef.current, ps.x - 10, ps.y - 10, 20, 20);
+  }, [
+    chartContainerRef,
+    chartRef,
+    chartWidth,
+    day,
+    halfInnerWidth,
+    scrollNumb,
+    sunRef,
+    tmpPos,
+  ]);
 
   return (
-    // <div className="chart-wrapper" ref={chartWrapperRef}>
-    <div className="chart-container" ref={chartContainerRef}>
+    <div
+      className="chart-container"
+      ref={chartContainerRef}
+      onScroll={handleScroll}
+    >
       <div className="chart-title">
         <span className="blue-title">Tide</span>
         <span className="orange-title">Sunrise & Sunset</span>
       </div>
       <canvas className="chart-canvas" ref={chartRef} />
+      <img ref={sunRef} src={sun} className="img-sun" alt="sun" />
+      {mode === "moon" && <div className="icon-moon"></div>}
+      {mode === "sun" && <div className="icon-sun"></div>}
+      <span className="time-text">{timeScroll}</span>
     </div>
-    // </div>
   );
 };
 
