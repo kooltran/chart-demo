@@ -2,7 +2,7 @@ import React, {
   useEffect,
   useState,
   useLayoutEffect,
-  useCallback,
+  useCallback
 } from "react";
 import {
   formatTime,
@@ -10,7 +10,7 @@ import {
   convertPxToTime,
   getTimeMode,
   getQuadraticCurvePoint,
-  convertDataToXY,
+  convertDataToXY
 } from "../../helpers";
 import sun from "../../assets/img/icons/sun.svg";
 
@@ -115,11 +115,11 @@ const WeatherChart = () => {
         // draw info tide and time of TideChart
         _fillText(startPt, ctx, {
           waterLevel: tideData[i].waterLevel.start,
-          time: tideData[i].time.start,
+          time: tideData[i].time.start
         });
         _fillText(endPt, ctx, {
           waterLevel: tideData[i].waterLevel.end,
-          time: tideData[i].time.end,
+          time: tideData[i].time.end
         });
 
         const middlePtY =
@@ -135,7 +135,7 @@ const WeatherChart = () => {
             start: startPt,
             end: middlePt,
             chartHeight: chartContainerHeight,
-            ctx,
+            ctx
           });
 
           ctx.moveTo(middlePtX, middlePtY);
@@ -146,7 +146,7 @@ const WeatherChart = () => {
             start: middlePt,
             end: endPt,
             chartHeight: chartContainerHeight,
-            ctx,
+            ctx
           });
         } else {
           ctx.moveTo(startPt.x, startPt.y);
@@ -157,7 +157,7 @@ const WeatherChart = () => {
             start: startPt,
             end: middlePt,
             chartHeight: chartContainerHeight,
-            ctx,
+            ctx
           });
 
           ctx.moveTo(middlePtX, middlePtY);
@@ -168,7 +168,7 @@ const WeatherChart = () => {
             start: middlePt,
             end: endPt,
             chartHeight: chartContainerHeight,
-            ctx,
+            ctx
           });
         }
       }
@@ -203,8 +203,9 @@ const WeatherChart = () => {
     [chartWidth, period, halfChartWidth, scrollNumb, sunRef, tmpPos]
   );
 
-  const handleScroll = ({ target }) => {
+  const handleScroll = ({ target } = {}) => {
     const period = Math.floor(scrollNumb / chartWidth);
+    if (!target) return;
     setScroll(target.scrollLeft);
     setPeriod(period);
     setDay(Math.floor(timeFromPx / 24));
@@ -227,11 +228,11 @@ const WeatherChart = () => {
     chartRef,
     drawSun,
     drawTideChart,
-    drawTimeChart,
+    drawTimeChart
   ]);
 
   useLayoutEffect(() => {
-    const updateChartWidth = (e) => {
+    const updateChartWidth = e => {
       const resizedChartWidth = e && e.currentTarget.innerWidth;
       if (resizedChartWidth) {
         setChartWidth(resizedChartWidth);
