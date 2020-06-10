@@ -1,3 +1,66 @@
+export const sampleDateWater = [
+  {
+    waterLevel: {
+      start: 0.3,
+      end: 2,
+    },
+  },
+  {
+    waterLevel: {
+      start: 2,
+      end: 0.3,
+    },
+  },
+  {
+    waterLevel: {
+      start: 0.3,
+      end: 2,
+    },
+  },
+  {
+    waterLevel: {
+      start: 2,
+      end: 0.3,
+    },
+  },
+  {
+    waterLevel: {
+      start: 0.3,
+      end: 2,
+    },
+  },
+  {
+    waterLevel: {
+      start: 2,
+      end: 0.3,
+    },
+  },
+  {
+    waterLevel: {
+      start: 0.3,
+      end: 2,
+    },
+  },
+  {
+    waterLevel: {
+      start: 2,
+      end: 0.3,
+    },
+  },
+  {
+    waterLevel: {
+      start: 0.3,
+      end: 2,
+    },
+  },
+  {
+    waterLevel: {
+      start: 2,
+      end: 0.3,
+    },
+  },
+];
+
 export const formatTime = (time) => {
   const fmTime = time % 24;
   const decimal = fmTime % 1;
@@ -14,7 +77,7 @@ export const formatTime = (time) => {
 export const getTimeMode = (time) => {
   const fmTime = time % 24;
   const hr = Math.floor(fmTime);
-  if (hr >= 19 || hr < 7) {
+  if (hr >= 19 || hr < 6) {
     return { mode: "moon" };
   } else {
     return { mode: "sun" };
@@ -23,19 +86,18 @@ export const getTimeMode = (time) => {
 
 export const generateTime = (n) => {
   let res = [];
-  for (let i = 1; i <= n; i++) {
+  for (let i = 0; i < n; i++) {
     res.push(sampleDataTimeItem(i));
   }
   return res;
 };
 
 export const sampleDataTimeItem = (n) => {
-  console.log(n);
-  const TIDE_PERIOD = 7;
+  const TIDE_PERIOD = 6;
   return {
     time: {
-      start: (n + 1) * TIDE_PERIOD,
-      end: (n + 2) * TIDE_PERIOD,
+      start: n * TIDE_PERIOD,
+      end: (n + 1) * TIDE_PERIOD,
     },
   };
 };
@@ -60,6 +122,20 @@ export const getQuadraticCurvePoint = (
   };
 };
 
-export const convertPxToTime = (px, chartWidth) => {
-  return (px / chartWidth) * 12 + 7;
+export const convertDataToXY = (chartHeight, waterLevel, time, pxEachHr) => {
+  return {
+    x: time * pxEachHr,
+    y: chartHeight - waterLevel * 100,
+  };
 };
+
+export const convertPxToTime = (px, chartWidth) => {
+  return (px / chartWidth) * 12 + 6;
+};
+
+const sampleDataTime = generateTime(sampleDateWater.length);
+
+export const tideData = sampleDateWater.map((item, i) => ({
+  ...item,
+  ...sampleDataTime[i],
+}));

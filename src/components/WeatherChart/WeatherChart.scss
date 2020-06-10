@@ -42,8 +42,7 @@
       display: none;
     }
 
-    .icon-moon,
-    .icon-sun {
+    .icon-moon {
       position: fixed;
       bottom: 25%;
       left: 50%;
@@ -57,14 +56,20 @@
       background-image: url($ICON_MOON);
     }
 
-    // .icon-sun {
-    //   background-image: url($ICON_SUN);
-    // }
+    .day-text {
+      position: fixed;
+      bottom: calc(40% - 60px);
+      left: 50%;
+      font-size: 24px;
+      color: $COLOR_BLACK;
+      font-weight: 700;
+      transform: translateX(-50%);
+    }
   }
 
   &-title {
-    position: absolute;
-    top: 10px;
+    position: fixed;
+    bottom: calc(40% - 25px);
     left: 15px;
     width: 100%;
 
