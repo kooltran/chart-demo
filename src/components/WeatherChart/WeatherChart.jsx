@@ -1,27 +1,22 @@
-import React, {
-  useEffect,
-  useState,
-  useLayoutEffect,
-  useCallback
-} from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   formatTime,
   tideData,
   convertPxToTime,
   getTimeMode,
   getQuadraticCurvePoint,
-  convertDataToXY
+  convertDataToXY,
 } from "../../helpers";
+import { useWindowResize } from "./useWindowResize";
 import sun from "../../assets/img/icons/sun.svg";
 
 const PERIOD = 5;
 
 const WeatherChart = () => {
-  const { innerWidth } = window;
   const chartRef = React.createRef();
   const chartContainerRef = React.createRef();
   const sunRef = React.createRef();
-  const [chartWidth, setChartWidth] = useState(innerWidth);
+  const chartWidth = useWindowResize();
   const [scrollNumb, setScroll] = useState(0);
   const [tmpPos, setPos] = useState(0.0);
   const [period, setPeriod] = useState(0);
@@ -34,9 +29,8 @@ const WeatherChart = () => {
   const mode = getTimeMode(timeFromPx).mode;
 
   const _fillChartBg = ({ start, end, chartHeight, ctx, options = {} }) => {
-    ctx.lineTo(end.x, chartHeight - 20);
-    ctx.lineTo(start.x, chartHeight - 20);
-    ctx.lineTo(start.x, start.y);
+    ctx.lineTo(end.x, chartHeight);
+    ctx.lineTo(start.x, chartHeight);
 
     ctx.fillStyle = options.fillStyle || "#c1e5f7";
     ctx.strokeStyle = "#c1e5f7";
@@ -47,11 +41,11 @@ const WeatherChart = () => {
     ctx.font = "14px Comic Sans MS";
     ctx.textAlign = "center";
     ctx.fillStyle = "#333";
-    ctx.fillText(`${dataText.waterLevel} m`, start.x, start.y - 27);
-    ctx.fillText(formatTime(dataText.time), start.x, start.y - 9);
+    ctx.fillText(`${dataText.waterLevel} m`, start.x, start.y / 2 + 20 + 18);
+    ctx.fillText(formatTime(dataText.time), start.x, start.y / 2 + 20 + 35);
 
     ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
-    ctx.fillRect(start.x - 28, start.y - 44, 55, 44);
+    ctx.fillRect(start.x - 28, start.y / 2 + 20, 60, 44);
   };
 
   //draw time chart
@@ -61,7 +55,7 @@ const WeatherChart = () => {
       ctx.lineWidth = 2;
       ctx.strokeStyle = "#ff8514";
 
-      for (let i = 0; i < PERIOD; i++) {
+      for (let i = 0; i < tideData.length; i++) {
         ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
         if (i === 0) {
           ctx.fillRect(0, 0, halfChartWidth, chartHeight);
@@ -98,81 +92,79 @@ const WeatherChart = () => {
         .height;
       ctx.beginPath();
       ctx.strokeStyle = "#94d6f7";
-      for (let i = 0; i < tideData.length; i++) {
-        const startPt = convertDataToXY(
+      for (let i = 0; i < tideData.length - 2; i++) {
+        const firstPt = convertDataToXY(
           chartHeight,
           tideData[i].waterLevel.start,
           tideData[i].time.start,
           pxEachHr
         );
-        const endPt = convertDataToXY(
+        const secondPt = convertDataToXY(
           chartHeight,
           tideData[i].waterLevel.end,
           tideData[i].time.end,
           pxEachHr
         );
+        const thirdPt = convertDataToXY(
+          chartHeight,
+          tideData[i + 2].waterLevel.start,
+          tideData[i + 2].time.start,
+          pxEachHr
+        );
 
-        // draw info tide and time of TideChart
-        _fillText(startPt, ctx, {
-          waterLevel: tideData[i].waterLevel.start,
-          time: tideData[i].time.start
-        });
-        _fillText(endPt, ctx, {
-          waterLevel: tideData[i].waterLevel.end,
-          time: tideData[i].time.end
-        });
+        const middlePtXFirst = (secondPt.x - firstPt.x) / 2 + firstPt.x;
+        const middlePtYFirst =
+          (chartHeight - firstPt.y - (chartHeight - secondPt.y)) / 2 +
+          firstPt.y;
 
-        const middlePtY =
-          (chartHeight - startPt.y - (chartHeight - endPt.y)) / 2 + startPt.y;
-        const middlePtX = (endPt.x - startPt.x) / 2 + startPt.x;
-        const middlePt = { x: middlePtX, y: middlePtY };
+        const middlePtFirst = { x: middlePtXFirst, y: middlePtYFirst };
 
-        if (!(i % 2)) {
-          ctx.moveTo(startPt.x, startPt.y);
-          ctx.quadraticCurveTo(middlePtX, startPt.y, middlePtX, middlePtY);
+        const middlePtXSecond = (thirdPt.x - secondPt.x) / 2 + secondPt.x;
+        const middlePtYSecond =
+          (chartHeight - secondPt.y - (chartHeight - thirdPt.y)) / 2 +
+          secondPt.y;
+
+        const middlePtSecond = { x: middlePtXSecond, y: middlePtYSecond };
+
+        if (i === 0) {
+          ctx.moveTo(-middlePtFirst.x, middlePtFirst.y);
+          ctx.quadraticCurveTo(
+            firstPt.x,
+            firstPt.y,
+            middlePtFirst.x,
+            middlePtFirst.y
+          );
 
           _fillChartBg({
-            start: startPt,
-            end: middlePt,
+            start: { x: -middlePtFirst.x, y: middlePtFirst.y },
+            end: middlePtFirst,
             chartHeight: chartContainerHeight,
-            ctx
-          });
-
-          ctx.moveTo(middlePtX, middlePtY);
-          ctx.quadraticCurveTo(middlePtX, endPt.y, endPt.x, endPt.y);
-
-          // fill background color for the TideChart
-          _fillChartBg({
-            start: middlePt,
-            end: endPt,
-            chartHeight: chartContainerHeight,
-            ctx
-          });
-        } else {
-          ctx.moveTo(startPt.x, startPt.y);
-          ctx.quadraticCurveTo(middlePtX, startPt.y, middlePtX, middlePtY);
-
-          // fill background color for the TideChart
-          _fillChartBg({
-            start: startPt,
-            end: middlePt,
-            chartHeight: chartContainerHeight,
-            ctx
-          });
-
-          ctx.moveTo(middlePtX, middlePtY);
-          ctx.quadraticCurveTo(middlePtX, endPt.y, endPt.x, endPt.y);
-
-          // fill background color for the TideChart
-          _fillChartBg({
-            start: middlePt,
-            end: endPt,
-            chartHeight: chartContainerHeight,
-            ctx
+            ctx,
           });
         }
-      }
 
+        ctx.moveTo(middlePtFirst.x, middlePtFirst.y);
+        ctx.quadraticCurveTo(
+          secondPt.x,
+          secondPt.y,
+          middlePtSecond.x,
+          middlePtSecond.y
+        );
+
+        //fill chart background
+        _fillChartBg({
+          start: firstPt,
+          end: middlePtSecond,
+          chartHeight: chartContainerHeight,
+          ctx,
+        });
+
+        //fill tide chart info
+        _fillText(firstPt, ctx, {
+          waterLevel: tideData[i].waterLevel.start,
+          time: tideData[i].time.start,
+        });
+      }
       ctx.stroke();
     },
     [chartContainerRef, pxEachHr]
@@ -203,47 +195,36 @@ const WeatherChart = () => {
     [chartWidth, period, halfChartWidth, scrollNumb, sunRef, tmpPos]
   );
 
-  const handleScroll = ({ target } = {}) => {
-    const period = Math.floor(scrollNumb / chartWidth);
+  const handleScroll = ({ target = {} }) => {
     if (!target) return;
+    const period = Math.floor(scrollNumb / chartWidth);
     setScroll(target.scrollLeft);
     setPeriod(period);
     setDay(Math.floor(timeFromPx / 24));
   };
 
   const handleCanvas = useCallback(() => {
-    const chartHeight = chartContainerRef.current.offsetHeight - 20;
-    const c = chartRef.current;
-    const ctx = chartRef.current.getContext("2d");
+    const chartHeight =
+      chartContainerRef.current && chartContainerRef.current.offsetHeight - 20;
+    const c = chartRef.current || {};
+    const ctx = chartRef.current && chartRef.current.getContext("2d");
 
     c.width = canvasWidth;
     c.height = chartHeight;
 
-    drawTideChart(ctx, chartHeight);
-    drawTimeChart(ctx, chartHeight);
-    drawSun(ctx, chartHeight);
+    if (ctx) {
+      drawTideChart(ctx, chartHeight);
+      drawTimeChart(ctx, chartHeight);
+      drawSun(ctx, chartHeight);
+    }
   }, [
     canvasWidth,
     chartContainerRef,
     chartRef,
     drawSun,
     drawTideChart,
-    drawTimeChart
+    drawTimeChart,
   ]);
-
-  useLayoutEffect(() => {
-    const updateChartWidth = e => {
-      const resizedChartWidth = e && e.currentTarget.innerWidth;
-      if (resizedChartWidth) {
-        setChartWidth(resizedChartWidth);
-      }
-    };
-    updateChartWidth();
-    window.addEventListener("resize", updateChartWidth);
-    return () => {
-      window.removeEventListener("resize", updateChartWidth);
-    };
-  }, [chartWidth]);
 
   useEffect(() => {
     handleCanvas();

@@ -2,27 +2,24 @@ import React from "react";
 import renderer from "react-test-renderer";
 import WeatherChart from "./WeatherChart";
 import Adapter from "enzyme-adapter-react-16";
-import { shallow, configure, mount } from "enzyme";
-import { useState } from "react";
-import { act, renderHook } from "@testing-library/react-hooks";
-configure({ adapter: new Adapter() });
+import { shallow, mount, configure } from "enzyme";
 
-// HTMLCanvasElement.prototype.getContext = () => {};
-// const handleCanvas = jest.fn();
+import { renderHook } from "@testing-library/react-hooks";
+import { useState } from "react";
+
+configure({ adapter: new Adapter() });
 
 describe("WeatherChart", () => {
   let wrapper;
   // const setScroll = jest.fn();
-  // // const setPeriod = jest.fn();
-  // // const setDay = jest.fn();
+  // const setPeriod = jest.fn();
+  // const setDay = jest.fn();
   // const match = { target: { scrollLeft: 100 } };
-  // const handleScroll = jest.fn();
+  // const handleScroll = jest.fn({ target: { scrollLeft: 100 } });
   // const useStateSpy = jest.spyOn(React, "useState");
-  // useStateSpy.mockImplementation(init => [init, setScroll]);
-  const { result } = renderHook(() => useState(0));
+  // useStateSpy.mockImplementation((init) => [init, setScroll]);
 
-  const [_, setScroll] = result.current;
-
+  const { scrollNumb } = renderHook(() => useState(0));
   it("should render WeatherParams correctly", () => {
     wrapper = renderer.create(<WeatherChart />).toJSON();
     expect(wrapper).toMatchSnapshot();
@@ -32,10 +29,10 @@ describe("WeatherChart", () => {
     wrapper = mount(<WeatherChart />);
   });
 
-  it("should call the handleScroll function when scroll chart container", () => {
-    console.log(setScroll, "setScroll");
+  it("should call the setScroll function when scroll chart container", () => {
     wrapper = shallow(<WeatherChart />);
     wrapper.find(".chart-container").simulate("scroll", { deltaX: 100 });
-    // expect(setScroll).toHaveBeenCalled();
+    // console.log(wrapper.state());
+    // expect(scrollNumb).toEqual(0);
   });
 });

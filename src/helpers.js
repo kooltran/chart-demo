@@ -59,6 +59,18 @@ export const sampleDateWater = [
       end: 0.3,
     },
   },
+  {
+    waterLevel: {
+      start: 0.3,
+      end: 2,
+    },
+  },
+  {
+    waterLevel: {
+      start: 2,
+      end: 0.3,
+    },
+  },
 ];
 
 export const formatTime = (time) => {
