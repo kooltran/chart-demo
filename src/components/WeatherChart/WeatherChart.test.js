@@ -4,22 +4,11 @@ import WeatherChart from "./WeatherChart";
 import Adapter from "enzyme-adapter-react-16";
 import { shallow, mount, configure } from "enzyme";
 
-import { renderHook } from "@testing-library/react-hooks";
-import { useState } from "react";
-
 configure({ adapter: new Adapter() });
 
 describe("WeatherChart", () => {
   let wrapper;
-  // const setScroll = jest.fn();
-  // const setPeriod = jest.fn();
-  // const setDay = jest.fn();
-  // const match = { target: { scrollLeft: 100 } };
-  // const handleScroll = jest.fn({ target: { scrollLeft: 100 } });
-  // const useStateSpy = jest.spyOn(React, "useState");
-  // useStateSpy.mockImplementation((init) => [init, setScroll]);
 
-  const { scrollNumb } = renderHook(() => useState(0));
   it("should render WeatherParams correctly", () => {
     wrapper = renderer.create(<WeatherChart />).toJSON();
     expect(wrapper).toMatchSnapshot();
@@ -29,10 +18,12 @@ describe("WeatherChart", () => {
     wrapper = mount(<WeatherChart />);
   });
 
-  it("should call the setScroll function when scroll chart container", () => {
+  it("should render right time when scroll the chart", () => {
+    const mEvent = {
+      target: { scrollLeft: 50 },
+    };
     wrapper = shallow(<WeatherChart />);
-    wrapper.find(".chart-container").simulate("scroll", { deltaX: 100 });
-    // console.log(wrapper.state());
-    // expect(scrollNumb).toEqual(0);
+    wrapper.find(".chart-container").simulate("scroll", mEvent);
+    expect(wrapper.find(".time-text").text()).toEqual("6:35 am");
   });
 });

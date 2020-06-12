@@ -1,7 +1,7 @@
 export const sampleDateWater = [
   {
     waterLevel: {
-      start: 0.3,
+      start: 0.2,
       end: 2,
     },
   },
@@ -68,7 +68,7 @@ export const sampleDateWater = [
   {
     waterLevel: {
       start: 2,
-      end: 0.3,
+      end: 0.5,
     },
   },
 ];

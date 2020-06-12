@@ -1,4 +1,5 @@
 {
+  "homepage": "https://kooltran.github.io/chart-demo",
   "name": "sp_weatherweb_kiettran",
   "version": "0.1.0",
   "private": true,
@@ -18,7 +19,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -39,6 +42,7 @@
     "@testing-library/react-hooks": "^3.3.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "eslint-plugin-react": "^7.20.0",
+    "gh-pages": "^3.0.0",
     "jest-canvas-mock": "^2.2.0",
     "react-test-render": "^1.1.2"
   }
