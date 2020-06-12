@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/chart-demo/static/css/main.92f29d4d.chunk.css",
+    "main.css": "/chart-demo/static/css/main.febc5011.chunk.css",
     "main.js": "/chart-demo/static/js/main.9ff68168.chunk.js",
     "main.js.map": "/chart-demo/static/js/main.9ff68168.chunk.js.map",
     "runtime-main.js": "/chart-demo/static/js/runtime-main.7dd81717.js",
@@ -8,9 +8,9 @@
     "static/js/2.229295f1.chunk.js": "/chart-demo/static/js/2.229295f1.chunk.js",
     "static/js/2.229295f1.chunk.js.map": "/chart-demo/static/js/2.229295f1.chunk.js.map",
     "index.html": "/chart-demo/index.html",
-    "precache-manifest.b21865c0d70e41d3d04d57b29db59375.js": "/chart-demo/precache-manifest.b21865c0d70e41d3d04d57b29db59375.js",
+    "precache-manifest.a3ffc49272a306d1ee5b6e5e6d01a81f.js": "/chart-demo/precache-manifest.a3ffc49272a306d1ee5b6e5e6d01a81f.js",
     "service-worker.js": "/chart-demo/service-worker.js",
-    "static/css/main.92f29d4d.chunk.css.map": "/chart-demo/static/css/main.92f29d4d.chunk.css.map",
+    "static/css/main.febc5011.chunk.css.map": "/chart-demo/static/css/main.febc5011.chunk.css.map",
     "static/js/2.229295f1.chunk.js.LICENSE.txt": "/chart-demo/static/js/2.229295f1.chunk.js.LICENSE.txt",
     "static/media/styles.scss": "/chart-demo/static/media/water_drop.4d85c86e.svg",
     "static/media/sun.svg": "/chart-demo/static/media/sun.da20b792.svg"
@@ -18,7 +18,7 @@
   "entrypoints": [
     "static/js/runtime-main.7dd81717.js",
     "static/js/2.229295f1.chunk.js",
-    "static/css/main.92f29d4d.chunk.css",
+    "static/css/main.febc5011.chunk.css",
     "static/js/main.9ff68168.chunk.js"
   ]
 }
