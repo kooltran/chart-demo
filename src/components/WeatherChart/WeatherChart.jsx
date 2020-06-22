@@ -247,7 +247,8 @@ const WeatherChart = () => {
   useEffect(() => {
     handleCanvas();
   }, [chartContainerRef, chartWidth, handleCanvas, scrollNumb]);
-
+  console.log(chartWidth, "chartWidth");
+  console.log(chartContainerRef, "chartContainerRef");
   return (
     <div
       className="chart-container"
